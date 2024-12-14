@@ -1,79 +1,162 @@
-import re
-import json
-import requests
-from datetime import datetime
-from datetime import timedelta
-from ics import Calendar, Event
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp.//Example Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:許瑜愷 12月班表
+X-WR-TIMEZONE:Asia/Taipei
 
-cookie = '<replace with your cookie>'
-url = 'http://jw.hitsz.edu.cn/xszykb/queryxszykbzhou'
-year = '2024-2025'
-semester = '1'
-first_day = '2024-08-26'
+BEGIN:VEVENT
+UID:20241201T1200Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241201T040000Z
+DTEND:20241201T160000Z
+SUMMARY:許瑜愷 - F班 (12:00-00:00)
+DESCRIPTION:上班時間：12:00-00:00 (本地時間)
+END:VEVENT
 
-# times in a day
-times = [(8,  0 , 9,  45),
-         (10, 0 , 11, 45),
-         (14, 0 , 15, 45),
-         (16, 0 , 17, 45),
-         (18, 45, 20, 30),
-         (20, 45, 22, 30)]
+BEGIN:VEVENT
+UID:20241204T0800Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241204T000000Z
+DTEND:20241204T120000Z
+SUMMARY:許瑜愷 - O班 (08:00-20:00)
+DESCRIPTION:上班時間：08:00-20:00 (本地時間)
+END:VEVENT
 
-headers = {
-    'Accept': '*/*', 
-    'Accept-Encoding': 'gzip, deflate', 
-    'Accept-Language': 'zh-CN,zh-Hans;q=0.9', 
-    'Connection': 'keep-alive', 
-    'Content-Length': '22', 
-    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', 
-    'Cookie': cookie,
-    'Host': 'jw.hitsz.edu.cn', 
-    'Origin': 'http://jw.hitsz.edu.cn', 
-    'Proxy-Connection': 'keep-alive', 
-    'Referer': 'http://jw.hitsz.edu.cn/authentication/main', 
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15', 
-    'X-Requested-With': 'XMLHttpRequest', 
-}
+BEGIN:VEVENT
+UID:20241205T0800Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241205T000000Z
+DTEND:20241205T120000Z
+SUMMARY:許瑜愷 - A班 (08:00-20:00)
+DESCRIPTION:上班時間：08:00-20:00 (本地時間)
+END:VEVENT
 
-payload = {
-    'xn': year,
-    'xq': semester,
-    'zc': '1'
-}
+BEGIN:VEVENT
+UID:20241206T0800Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241206T000000Z
+DTEND:20241206T120000Z
+SUMMARY:許瑜愷 - A班 (08:00-20:00)
+DESCRIPTION:上班時間：08:00-20:00 (本地時間)
+END:VEVENT
 
-semester_calender = Calendar()
+BEGIN:VEVENT
+UID:20241207T1000Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241207T020000Z
+DTEND:20241207T140000Z
+SUMMARY:許瑜愷 - E班 (10:00-22:00)
+DESCRIPTION:上班時間：10:00-22:00 (本地時間)
+END:VEVENT
 
-for week in range(1, 17):
-    # get calender
-    payload['zc'] = str(week)
-    result = requests.post(url, headers=headers, data=payload)
-    result_json = json.loads(result.content.decode('utf-8'))
-    result = []
-    for item in result_json:
-        if item['XB'] != 0:
-            key = item['KEY']
-            r = re.findall(r'xq([0-9])+_jc([0-9])+', key)
-            result += [(item['SKSJ'], week, int(r[0][0]), int(r[0][1]))]
-    # print(result)
-    # generate ics objects
-    monday = datetime.fromisoformat(f'{first_day}T00:00:00+08:00') + timedelta(weeks=week-1)
-    print(monday)
-    events = []
-    for event in result:
-        eobj = Event()
-        eobj.name = event[0].split('\n')[0]
-        eobj.description = event[0]
-        starttime = monday + timedelta(days=event[2] - 1, hours=times[event[3] - 1][0], minutes=times[event[3] - 1][1])
-        eobj.begin = starttime
-        endtime = monday + timedelta(days=event[2] - 1, hours=times[event[3] - 1][2], minutes=times[event[3] - 1][3])
-        eobj.end = endtime
-        loc = re.findall(r'\[(.*?)\]', eobj.description)
-        if len(loc) > 0:
-            eobj.location = loc[-1]
-        semester_calender.events.add(eobj)
+BEGIN:VEVENT
+UID:20241208T1000Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241208T020000Z
+DTEND:20241208T140000Z
+SUMMARY:許瑜愷 - E班 (10:00-22:00)
+DESCRIPTION:上班時間：10:00-22:00 (本地時間)
+END:VEVENT
 
-with open('semester.ics', 'w+') as f:
-    f.writelines(semester_calender.serialize())
+BEGIN:VEVENT
+UID:20241212T2200Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241212T140000Z
+DTEND:20241213T000000Z
+SUMMARY:許瑜愷 - 4班 (22:00-08:00)
+DESCRIPTION:上班時間：22:00-08:00 (本地時間)
+END:VEVENT
 
+BEGIN:VEVENT
+UID:20241213T2200Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241213T140000Z
+DTEND:20241214T000000Z
+SUMMARY:許瑜愷 - 4班 (22:00-08:00)
+DESCRIPTION:上班時間：22:00-08:00 (本地時間)
+END:VEVENT
 
+BEGIN:VEVENT
+UID:20241214T1900Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241214T110000Z
+DTEND:20241214T190000Z
+SUMMARY:許瑜愷 - R班 (19:00-03:00)
+DESCRIPTION:上班時間：19:00-03:00 (本地時間)
+END:VEVENT
 
+BEGIN:VEVENT
+UID:20241215T1400Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241215T060000Z
+DTEND:20241215T160000Z
+SUMMARY:許瑜愷 - W班 (14:00-00:00)
+DESCRIPTION:上班時間：14:00-00:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241216T1100Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241216T030000Z
+DTEND:20241216T150000Z
+SUMMARY:許瑜愷 - 2班 (11:00-23:00)
+DESCRIPTION:上班時間：11:00-23:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241217T1000Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241217T020000Z
+DTEND:20241217T140000Z
+SUMMARY:許瑜愷 - E班 (10:00-22:00)
+DESCRIPTION:上班時間：10:00-22:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241224T1600Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241224T080000Z
+DTEND:20241224T180000Z
+SUMMARY:許瑜愷 - I班 (16:00-02:00)
+DESCRIPTION:上班時間：16:00-02:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241225T1300Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241225T050000Z
+DTEND:20241225T170000Z
+SUMMARY:許瑜愷 - V班 (13:00-01:00)
+DESCRIPTION:上班時間：13:00-01:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241226T1200Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241226T040000Z
+DTEND:20241226T160000Z
+SUMMARY:許瑜愷 - F班 (12:00-00:00)
+DESCRIPTION:上班時間：12:00-00:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241229T0800Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241229T000000Z
+DTEND:20241229T120000Z
+SUMMARY:許瑜愷 - A班 (08:00-20:00)
+DESCRIPTION:上班時間：08:00-20:00 (本地時間)
+END:VEVENT
+
+BEGIN:VEVENT
+UID:20241230T0800Z-ahsunli@gmail.com
+DTSTAMP:20241214T000000Z
+DTSTART:20241230T000000Z
+DTEND:20241230T120000Z
+SUMMARY:許瑜愷 - A班 (08:00-20:00)
+DESCRIPTION:上班時間：08:00-20:00 (本地時間)
+END:VEVENT
+
+END:VCALENDAR
